@@ -1,6 +1,8 @@
 /**
- * Created by PanJiaChen on 16/11/18.
+ * Created by WeiLiu on 2019/06/11.
  */
+
+import md5 from 'md5'
 
 /**
  * Parse the time to string
@@ -107,4 +109,45 @@ export function param2Obj(url) {
         .replace(/\+/g, ' ') +
       '"}'
   )
+}
+
+/**
+ * Md5 encryption
+ * @param {String} password
+ * @returns {String}
+ */
+export const encrypt = function(str) {
+  return md5(str)
+}
+
+/**
+ * Parse user action type
+ * @param {String} key
+ * @returns {String}
+ */
+export const parseActionType = function(key) {
+  const typeObj = {
+    NEW_ADMIN: '新增用户',
+    EDIT_ADMIN: '修改用户信息',
+    DISABLE_ADMIN: '禁用用户',
+    ENABLE_ADMIN: '启用用户',
+    DELETE_ADMIN: '删除用户'
+  }
+
+  return typeObj[key]
+}
+
+/**
+ * Parse user type
+ * @param {String} key
+ * @returns {String}
+ */
+export const parseUserType = function(key) {
+  const typeObj = {
+    MANAGER: '管理员',
+    OPERATOR: '操作员',
+    ASSESSOR: '审核员'
+  }
+
+  return typeObj[key]
 }

@@ -17,7 +17,7 @@ import Layout from '@/layout'
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
+    roles: ['MANAGER','OPERATOR','ASSESSOR']    control the page roles (you can set multiple roles)
     title: 'title'               the name show in sidebar and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
     breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
@@ -44,48 +44,28 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    path: '/init-pass',
+    component: () => import('@/views/password/index'),
+    hidden: true
   },
 
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
+    path: '/retrieve-pass',
+    component: () => import('@/views/password/retrieve'),
+    hidden: true
   },
 
   {
-    path: '/form',
+    path: '/pass',
     component: Layout,
+    redirect: '/pass/update',
+    hidden: true,
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        path: 'update',
+        component: () => import('@/views/password/index'),
+        name: 'UpdatePassword',
+        meta: { title: 'updatePassword', noCache: true }
       }
     ]
   }
@@ -97,70 +77,124 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/nested',
+    path: '/',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/signature/dashboard',
+    name: 'Signature',
     meta: {
-      title: 'Nested',
-      icon: 'nested'
+      title: 'signature',
+      icon: 'example'
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: '/signature/dashboard',
+        name: 'SignatureDashboard',
+        component: () => import('@/views/signature/index'),
+        meta: { title: 'signatureDashboard' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: '/signature/history',
+        name: 'SignatureHistory',
+        component: () => import('@/views/signature/history'),
+        meta: { title: 'signatureHistory' }
+      },
+      {
+        path: '/signature/cert-manage',
+        name: 'CertificateManagement',
+        component: () => import('@/views/signature/cert-manage'),
+        meta: { title: 'certificateManagement', roles: ['MANAGER'] }
       }
     ]
   },
-
   {
-    path: 'external-link',
+    path: '/user',
     component: Layout,
+    redirect: '/user/list',
+    name: 'UserManage',
+    alwaysShow: true,
+    meta: {
+      title: 'userManage',
+      icon: 'user'
+    },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'list',
+        component: () => import('@/views/user/list'),
+        name: 'UserList',
+        meta: { title: 'userList', icon: 'list' }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/user/create'),
+        name: 'CreateUser',
+        meta: { title: 'createUser', activeMenu: '/user/list', roles: ['MANAGER'] },
+        hidden: true
+      },
+      {
+        path: 'edit/:id',
+        component: () => import('@/views/user/edit'),
+        name: 'EditUser',
+        meta: { title: 'editUser', noCache: true, activeMenu: '/user/list', roles: ['MANAGER'] },
+        hidden: true
+      },
+      {
+        path: 'audit-list',
+        component: () => import('@/views/user/audit-list'),
+        name: 'UserAuditList',
+        meta: { title: '待审核列表', icon: 'list', roles: ['MANAGER'] }
+      },
+      {
+        path: 'audit-detail/:id',
+        component: () => import('@/views/user/audit-detail'),
+        name: 'UserAuditDetail',
+        meta: { title: '审核详情', noCache: true, activeMenu: '/user/audit-list', roles: ['MANAGER'] },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/access',
+    component: Layout,
+    redirect: '/access/list',
+    name: 'Access',
+    alwaysShow: true,
+    meta: {
+      title: '接入端管理',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/access/list'),
+        name: 'AccessList',
+        meta: { title: '接入端列表', icon: 'list' }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/access/create'),
+        name: 'CreateAccess',
+        meta: { title: '增加接入端', activeMenu: '/access/list', roles: ['OPERATOR'] },
+        hidden: true
+      },
+      {
+        path: 'edit/:id',
+        component: () => import('@/views/access/edit'),
+        name: 'EditAccess',
+        meta: { title: '修改接入端', noCache: true, activeMenu: '/access/list', roles: ['OPERATOR'] },
+        hidden: true
+      },
+      {
+        path: 'audit-list',
+        component: () => import('@/views/access/audit-list'),
+        name: 'AccessAuditList',
+        meta: { title: '待审核列表', icon: 'list', roles: ['ASSESSOR'] }
+      },
+      {
+        path: 'audit-detail/:id',
+        component: () => import('@/views/access/audit-detail'),
+        name: 'AccessAuditDetail',
+        meta: { title: '审核详情', noCache: true, activeMenu: '/access/audit-list', roles: ['ASSESSOR'] },
+        hidden: true
       }
     ]
   },

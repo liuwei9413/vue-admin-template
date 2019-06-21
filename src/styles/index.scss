@@ -9,7 +9,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-size: 14px;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+button, input, optgroup, select, textarea {
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;  
 }
 
 label {
@@ -28,7 +33,7 @@ html {
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
 a:focus,
@@ -62,4 +67,12 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
 }

@@ -1,10 +1,12 @@
-import Cookies from 'js-cookie'
+import { getSessionStorage, setSessionStorage, setStorage } from '@/utils/storage'
+import { getLanguage } from '@/lang/index'
 
 const state = {
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    opened: getSessionStorage('sidebarStatus') ? !!+getSessionStorage('sidebarStatus') : true,
     withoutAnimation: false
   },
+  language: getLanguage(),
   device: 'desktop'
 }
 
@@ -13,18 +15,22 @@ const mutations = {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
+      setSessionStorage('sidebarStatus', 1)
     } else {
-      Cookies.set('sidebarStatus', 0)
+      setSessionStorage('sidebarStatus', 0)
     }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
+    setSessionStorage('sidebarStatus', 0)
     state.sidebar.opened = false
     state.sidebar.withoutAnimation = withoutAnimation
   },
   TOGGLE_DEVICE: (state, device) => {
     state.device = device
+  },
+  SET_LANGUAGE: (state, language) => {
+    state.language = language
+    setStorage('language', language)
   }
 }
 
@@ -37,6 +43,9 @@ const actions = {
   },
   toggleDevice({ commit }, device) {
     commit('TOGGLE_DEVICE', device)
+  },
+  setLanguage({ commit }, language) {
+    commit('SET_LANGUAGE', language)
   }
 }
 

@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || 'VeChain' // page title
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
@@ -28,7 +28,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
@@ -37,14 +37,15 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
+        // target: `http://127.0.0.1:${port}/mock`,
+        target: `http://192.168.50.169:1310`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
-    },
-    after: require('./mock/mock-server.js')
+    }
+    // after: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -88,11 +89,11 @@ module.exports = {
       })
       .end()
 
-    config
-    // https://webpack.js.org/configuration/devtool/#development
-      .when(process.env.NODE_ENV === 'development',
-        config => config.devtool('cheap-source-map')
-      )
+    // config
+    // // https://webpack.js.org/configuration/devtool/#development
+    //   .when(process.env.NODE_ENV === 'development',
+    //     config => config.devtool('cheap-source-map')
+    //   )
 
     config
       .when(process.env.NODE_ENV !== 'development',

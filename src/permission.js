@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login', '/retrieve-pass'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -19,32 +19,40 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
-      // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
-        next()
+      // determine whether the user has obtained his permission SET_ROLE through getInfo
+      if (store.getters.role !== '') {
+        // determine whether the user has change initial password
+        if (store.getters.password_status === 0 && to.path !== '/init-pass') {
+          next({ path: 'init-pass' })
+          NProgress.done()
+        } else {
+          next()
+        }
       } else {
         try {
           // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo')
+          const { role, passwordChangeStatus } = await store.dispatch('user/getInfo')
 
-          // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          // determine whether the user has change initial password
+          if (passwordChangeStatus === 0) {
+            next({ path: '/init-pass' })
+          } else {
+            // generate accessible routes map based on role
+            const accessRoutes = await store.dispatch('permission/generateRoutes', role)
 
-          // dynamically add accessible routes
-          router.addRoutes(accessRoutes)
+            // dynamically add accessible routes
+            router.addRoutes(accessRoutes)
 
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true })
+            // hack method to ensure that addRoutes is complete
+            // set the replace: true, so the navigation will not leave a history record
+            next({ ...to, replace: true })
+          }
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
@@ -56,6 +64,7 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
+    // debugger
 
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly

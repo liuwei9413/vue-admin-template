@@ -5,25 +5,29 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <template v-if="device!=='mobile'">
+
+        <lang-select class="right-menu-item hover-effect" />
+
+      </template>
       <el-dropdown class="avatar-container" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+        <div class="avatar-wrapper right-menu-item hover-effect">
+          <span class="user-name">{{ name }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
+          <router-link to="/pass/update">
             <el-dropdown-item>
-              Home
+              {{ $t('navbar.updatePassword') }}
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+          <router-link to="/pass/update">
+            <el-dropdown-item>
+              {{ $t('navbar.message') }}
+            </el-dropdown-item>
+          </router-link>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">Log Out</span>
+            <span style="display:block;" @click="logout">{{ this.$t('navbar.logOut') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -35,16 +39,19 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import LangSelect from '@/components/LangSelect'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    LangSelect
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'name',
+      'device'
     ])
   },
   methods: {
@@ -99,7 +106,6 @@ export default {
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
 
       &.hover-effect {
         cursor: pointer;
@@ -116,20 +122,14 @@ export default {
 
       .avatar-wrapper {
         margin-top: 5px;
+        padding-right: 18px;
         position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
 
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
-          right: -20px;
-          top: 25px;
+          right: 0;
+          top: 19px;
           font-size: 12px;
         }
       }

@@ -1,5 +1,9 @@
 // cover some element-ui styles
 
+.el-select {
+  display: block;
+}
+
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
   font-weight: 400 !important;
